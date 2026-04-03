@@ -259,20 +259,33 @@ body {
 .swap-shell {
   position: relative;
   margin-top: 12px;
+  min-height: 430px;
+  width: min(100%, 390px);
+  margin-left: auto;
+  margin-right: auto;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.swap-widget-frame {
+  position: relative;
   border: 1px solid rgba(140, 161, 255, 0.28);
   border-radius: 12px;
   overflow: hidden;
   background: rgba(8, 12, 30, 0.95);
-  min-height: 420px;
-  width: min(100%, 420px);
-  margin-left: auto;
-  margin-right: auto;
+  min-height: 430px;
 }
 
 .swap-widget-container {
   width: 100%;
-  min-height: 420px;
+  min-height: 430px;
   display: block;
+}
+
+.swap-widget-container > * {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
 }
 
 .swap-loading {
@@ -298,11 +311,29 @@ body {
   }
 
   .swap-shell {
-    min-height: 340px;
-    width: min(100%, 320px);
+    min-height: 370px;
+    width: min(100%, 300px);
+  }
+
+  .swap-widget-frame {
+    min-height: 370px;
   }
 
   .swap-widget-container {
-    min-height: 340px;
+    min-height: 370px;
+  }
+}
+
+@media (max-width: 390px) {
+  .swap-shell {
+    width: min(100%, 280px);
+  }
+
+  .swap-widget-frame {
+    min-height: 350px;
+  }
+
+  .swap-widget-container {
+    min-height: 350px;
   }
 }

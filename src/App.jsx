@@ -82,6 +82,21 @@ export default function App() {
   );
   const canSubmitQuiz = checkedIn && !quizResolved && hasAllQuizAnswers;
 
+  const scrollToFinalBlock = (behavior = "smooth") => {
+    if (!finalBlockRef.current) return;
+    finalBlockRef.current.scrollIntoView({ behavior, block: "start" });
+  };
+
+  const keepFinalBlockInView = () => {
+    if (!finalBlockRef.current) return;
+    const rect = finalBlockRef.current.getBoundingClientRect();
+    const isAboveViewport = rect.top < 0;
+    const isBelowViewport = rect.bottom > window.innerHeight;
+    if (isAboveViewport || isBelowViewport) {
+      scrollToFinalBlock("auto");
+    }
+  };
+
   const handleConnectWallet = () => {
     tonConnectUI.openModal();
   };
@@ -186,8 +201,16 @@ export default function App() {
 
   useEffect(() => {
     if (!quizPassed || !finalBlockRef.current) return;
-    finalBlockRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    scrollToFinalBlock("smooth");
   }, [quizPassed]);
+
+  useEffect(() => {
+    if (!showSwapWidget) return;
+    const timer = window.setTimeout(() => {
+      keepFinalBlockInView();
+    }, 120);
+    return () => window.clearTimeout(timer);
+  }, [showSwapWidget]);
 
   const walletLabel = wallet?.account?.address
     ? `${wallet.account.address.slice(0, 4)}...${wallet.account.address.slice(-4)}`
@@ -339,6 +362,11 @@ export default function App() {
                   setSwapWidgetLoading(false);
                   setSwapWidgetError("");
                 }
+                if (next) {
+                  window.setTimeout(() => {
+                    keepFinalBlockInView();
+                  }, 40);
+                }
                 return next;
               })
             }
@@ -347,11 +375,18 @@ export default function App() {
           </button>
           {quizPassed && showSwapWidget && (
             <>
-              <div className="swap-shell">
-                <div ref={swapWidgetContainerRef} className="swap-widget-container" />
-                {swapWidgetLoading && (
-                  <p className="swap-loading">Loading STON.fi swap widget...</p>
-                )}
+              <div
+                className="swap-shell"
+                onPointerDownCapture={keepFinalBlockInView}
+                onTouchStartCapture={keepFinalBlockInView}
+                onFocusCapture={keepFinalBlockInView}
+              >
+                <div className="swap-widget-frame">
+                  <div ref={swapWidgetContainerRef} className="swap-widget-container" />
+                  {swapWidgetLoading && (
+                    <p className="swap-loading">Loading STON.fi swap widget...</p>
+                  )}
+                </div>
               </div>
               {swapWidgetError && <p className="error">{swapWidgetError}</p>}
               <p className="helper">

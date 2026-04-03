@@ -4,11 +4,17 @@ import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import App from "./App";
 import "./styles.css";
 
-const manifestUrl = "https://eventfi-app.vercel.app/tonconnect-manifest.json";
+const manifestUrl = `${window.location.origin}/tonconnect-manifest.json`;
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <TonConnectUIProvider manifestUrl={manifestUrl}>
+    <TonConnectUIProvider
+      manifestUrl={manifestUrl}
+      actionsConfiguration={{
+        returnStrategy: "back",
+        skipRedirectToWallet: "never",
+      }}
+    >
       <App />
     </TonConnectUIProvider>
   </React.StrictMode>
