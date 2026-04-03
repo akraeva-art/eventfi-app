@@ -43,6 +43,7 @@ const QUIZ_QUESTIONS = [
   },
 ];
 const MAX_QUIZ_ATTEMPTS = 3;
+const CELEBRATION_SPARKS = Array.from({ length: 16 }, (_, index) => index);
 const EVENT_QR_TOKENS = {
   "eventfi-demo-2026": "ston-qr-access",
 };
@@ -216,8 +217,16 @@ export default function App() {
           <h2>3. Mini Quiz</h2>
           {quizPassed && (
             <div className="quiz-celebration" aria-hidden="true">
-              <span className="confetti confetti-left" />
-              <span className="confetti confetti-right" />
+              <div className="firework firework-left">
+                {CELEBRATION_SPARKS.map((spark) => (
+                  <span key={`left-${spark}`} className="spark" />
+                ))}
+              </div>
+              <div className="firework firework-right">
+                {CELEBRATION_SPARKS.map((spark) => (
+                  <span key={`right-${spark}`} className="spark" />
+                ))}
+              </div>
             </div>
           )}
           <p className="attempts">
