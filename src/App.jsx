@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 
 const QUIZ_OPTIONS = [
   "A centralized exchange for Bitcoin only",
@@ -9,7 +10,9 @@ const QUIZ_OPTIONS = [
 const CORRECT_ANSWER = QUIZ_OPTIONS[1];
 
 export default function App() {
-  const [walletConnected, setWalletConnected] = useState(false);
+  const [tonConnectUI] = useTonConnectUI();
+  const wallet = useTonWallet();
+  const walletConnected = Boolean(wallet);
   const [checkedIn, setCheckedIn] = useState(false);
   const [quizDone, setQuizDone] = useState(false);
   const [quizCorrect, setQuizCorrect] = useState(false);
@@ -20,7 +23,7 @@ export default function App() {
   const canSubmitQuiz = checkedIn && !quizDone && selectedAnswer !== "";
 
   const handleConnectWallet = () => {
-    setWalletConnected(true);
+    tonConnectUI.openModal();
   };
 
   const handleCheckIn = () => {
@@ -40,6 +43,10 @@ export default function App() {
       setStonBalance((current) => current + 10);
     }
   };
+
+  const walletLabel = wallet?.account?.address
+    ? `${wallet.account.address.slice(0, 4)}...${wallet.account.address.slice(-4)}`
+    : "Wallet Connected";
 
   let flowStep = 4;
   if (!walletConnected) flowStep = 1;
@@ -68,8 +75,21 @@ export default function App() {
             onClick={handleConnectWallet}
             disabled={walletConnected}
           >
-            {walletConnected ? "Wallet Connected" : "Connect Wallet"}
+            {walletConnected ? walletLabel : "Connect Wallet"}
           </button>
+          {!walletConnected && (
+            <p className="helper">
+              No wallet yet?{" "}
+              <a
+                className="helper-link"
+                href="https://tonkeeper.com"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Install Tonkeeper
+              </a>
+            </p>
+          )}
         </div>
 
         <div className="block">
@@ -119,9 +139,20 @@ export default function App() {
         <div className="block final-block">
           <h2>4. Final</h2>
           <p className="earned">You earned {stonBalance} STON</p>
-          <button type="button" className="btn btn-primary" disabled={!quizDone}>
-            Use in STON.fi
-          </button>
+          {quizDone ? (
+            <a
+              className="btn btn-primary btn-link"
+              href="https://app.ston.fi"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Use in STON.fi
+            </a>
+          ) : (
+            <button type="button" className="btn btn-primary" disabled>
+              Use in STON.fi
+            </button>
+          )}
         </div>
       </section>
     </main>
