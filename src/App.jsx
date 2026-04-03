@@ -55,6 +55,7 @@ export default function App() {
   const [quizPassed, setQuizPassed] = useState(false);
   const [quizAttempts, setQuizAttempts] = useState(0);
   const [quizFeedback, setQuizFeedback] = useState("");
+  const [showSwapWidget, setShowSwapWidget] = useState(false);
   const [quizAnswers, setQuizAnswers] = useState({
     q1: "",
     q2: "",
@@ -85,6 +86,7 @@ export default function App() {
     setQuizPassed(false);
     setQuizAttempts(0);
     setQuizFeedback("");
+    setShowSwapWidget(false);
     setQuizAnswers({ q1: "", q2: "", q3: "" });
     setStonBalance(0);
   };
@@ -210,8 +212,14 @@ export default function App() {
           {checkedIn && <p className="success">Badge unlocked</p>}
         </div>
 
-        <div className="block">
+        <div className={`block quiz-block ${quizPassed ? "quiz-success" : ""}`}>
           <h2>3. Mini Quiz</h2>
+          {quizPassed && (
+            <div className="quiz-celebration" aria-hidden="true">
+              <span className="confetti confetti-left" />
+              <span className="confetti confetti-right" />
+            </div>
+          )}
           <p className="attempts">
             Attempts used: {quizAttempts}/{MAX_QUIZ_ATTEMPTS}
           </p>
@@ -260,19 +268,48 @@ export default function App() {
         <div className="block final-block">
           <h2>4. Final</h2>
           <p className="earned">You earned {stonBalance} STON</p>
-          {quizResolved ? (
-            <a
-              className="btn btn-primary btn-link"
-              href="https://app.ston.fi"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Use in STON.fi
-            </a>
-          ) : (
-            <button type="button" className="btn btn-primary" disabled>
-              Use in STON.fi
-            </button>
+          {quizPassed && (
+            <p className="final-note">
+              Yes, you were absolutely right: OMNISTON is built for simplifying
+              UX and removing unnecessary steps. See for yourself.
+            </p>
+          )}
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={!quizPassed}
+            onClick={() => setShowSwapWidget((current) => !current)}
+          >
+            {showSwapWidget ? "Hide swap" : "Try swap in STON.fi"}
+          </button>
+          {quizPassed && showSwapWidget && (
+            <>
+              <div className="swap-shell">
+                <iframe
+                  title="STON.fi swap"
+                  className="swap-iframe"
+                  src="https://app.ston.fi/"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <p className="helper">
+                Widget blocked?{" "}
+                <a
+                  className="helper-link"
+                  href="https://app.ston.fi/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open STON.fi in a new tab
+                </a>
+              </p>
+            </>
+          )}
+          {!quizPassed && (
+            <p className="helper">
+              Complete the quiz with correct answers to unlock swap mode.
+            </p>
           )}
         </div>
       </section>
