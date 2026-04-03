@@ -150,6 +150,12 @@ h1 {
   color: #dce5ff;
 }
 
+.attempts {
+  margin: 0 0 12px;
+  color: #b9c8ff;
+  font-size: 0.92rem;
+}
+
 .quiz-item + .quiz-item {
   margin-top: 14px;
 }

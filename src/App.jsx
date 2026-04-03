@@ -4,6 +4,16 @@ import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 const QUIZ_QUESTIONS = [
   {
     id: "q1",
+    text: "What is STON.fi?",
+    options: [
+      "A centralized exchange for Bitcoin only",
+      "A DeFi protocol on TON for swaps and liquidity",
+      "An NFT gallery for event badges",
+    ],
+    correct: "A DeFi protocol on TON for swaps and liquidity",
+  },
+  {
+    id: "q2",
     text: "What does OMNISTON help users do?",
     options: [
       "a) Swap tokens across blockchains",
@@ -13,7 +23,7 @@ const QUIZ_QUESTIONS = [
     correct: "a) Swap tokens across blockchains",
   },
   {
-    id: "q2",
+    id: "q3",
     text: "What is one of OMNISTON's main user goals?",
     options: [
       "a) Mining Bitcoin",
@@ -23,6 +33,7 @@ const QUIZ_QUESTIONS = [
     correct: "c) Simplifying UX and removing unnecessary steps",
   },
 ];
+const MAX_QUIZ_ATTEMPTS = 3;
 const EVENT_QR_TOKENS = {
   "eventfi-demo-2026": "ston-qr-access",
 };
@@ -32,11 +43,13 @@ export default function App() {
   const wallet = useTonWallet();
   const walletConnected = Boolean(wallet);
   const [checkedIn, setCheckedIn] = useState(false);
-  const [quizDone, setQuizDone] = useState(false);
-  const [quizCorrect, setQuizCorrect] = useState(false);
+  const [quizPassed, setQuizPassed] = useState(false);
+  const [quizAttempts, setQuizAttempts] = useState(0);
+  const [quizFeedback, setQuizFeedback] = useState("");
   const [quizAnswers, setQuizAnswers] = useState({
     q1: "",
     q2: "",
+    q3: "",
   });
   const [stonBalance, setStonBalance] = useState(0);
   const searchParams = new URLSearchParams(window.location.search);
@@ -46,10 +59,12 @@ export default function App() {
     Boolean(eventId) && EVENT_QR_TOKENS[eventId] === eventToken;
 
   const canCheckIn = walletConnected && hasEventAccess && !checkedIn;
+  const quizLocked = !quizPassed && quizAttempts >= MAX_QUIZ_ATTEMPTS;
+  const quizResolved = quizPassed || quizLocked;
   const hasAllQuizAnswers = QUIZ_QUESTIONS.every(
     (question) => quizAnswers[question.id] !== ""
   );
-  const canSubmitQuiz = checkedIn && !quizDone && hasAllQuizAnswers;
+  const canSubmitQuiz = checkedIn && !quizResolved && hasAllQuizAnswers;
 
   const handleConnectWallet = () => {
     tonConnectUI.openModal();
@@ -58,9 +73,10 @@ export default function App() {
   const handleDisconnectWallet = async () => {
     await tonConnectUI.disconnect();
     setCheckedIn(false);
-    setQuizDone(false);
-    setQuizCorrect(false);
-    setQuizAnswers({ q1: "", q2: "" });
+    setQuizPassed(false);
+    setQuizAttempts(0);
+    setQuizFeedback("");
+    setQuizAnswers({ q1: "", q2: "", q3: "" });
     setStonBalance(0);
   };
 
@@ -77,10 +93,22 @@ export default function App() {
     const isCorrect = QUIZ_QUESTIONS.every(
       (question) => quizAnswers[question.id] === question.correct
     );
-    setQuizDone(true);
-    setQuizCorrect(isCorrect);
+    const nextAttempts = quizAttempts + 1;
+    setQuizAttempts(nextAttempts);
+
     if (isCorrect) {
+      setQuizPassed(true);
+      setQuizFeedback("Correct answers (+10 STON)");
       setStonBalance((current) => current + 10);
+      return;
+    }
+
+    const attemptsLeft = MAX_QUIZ_ATTEMPTS - nextAttempts;
+    if (attemptsLeft > 0) {
+      const attemptWord = attemptsLeft === 1 ? "attempt" : "attempts";
+      setQuizFeedback(`Not quite. Try again (${attemptsLeft} ${attemptWord} left).`);
+    } else {
+      setQuizFeedback("Not quite. No attempts left.");
     }
   };
 
@@ -98,7 +126,7 @@ export default function App() {
   let flowStep = 4;
   if (!walletConnected) flowStep = 1;
   else if (!checkedIn) flowStep = 2;
-  else if (!quizDone) flowStep = 3;
+  else if (!quizResolved) flowStep = 3;
 
   return (
     <main className="page">
@@ -175,6 +203,9 @@ export default function App() {
 
         <div className="block">
           <h2>3. Mini Quiz</h2>
+          <p className="attempts">
+            Attempts used: {quizAttempts}/{MAX_QUIZ_ATTEMPTS}
+          </p>
           <form onSubmit={handleQuizSubmit}>
             {QUIZ_QUESTIONS.map((question, index) => (
               <div key={question.id} className="quiz-item">
@@ -189,7 +220,7 @@ export default function App() {
                         name={question.id}
                         value={option}
                         checked={quizAnswers[question.id] === option}
-                        disabled={!checkedIn || quizDone}
+                        disabled={!checkedIn || quizResolved}
                         onChange={(event) =>
                           handleQuizAnswerChange(question.id, event.target.value)
                         }
@@ -204,18 +235,14 @@ export default function App() {
               Submit answers
             </button>
           </form>
-          {quizDone && quizCorrect && (
-            <p className="success">Correct answers (+10 STON)</p>
-          )}
-          {quizDone && !quizCorrect && (
-            <p className="error">Not quite. Reward was not added.</p>
-          )}
+          {quizPassed && <p className="success">{quizFeedback}</p>}
+          {!quizPassed && quizFeedback && <p className="error">{quizFeedback}</p>}
         </div>
 
         <div className="block final-block">
           <h2>4. Final</h2>
           <p className="earned">You earned {stonBalance} STON</p>
-          {quizDone ? (
+          {quizResolved ? (
             <a
               className="btn btn-primary btn-link"
               href="https://app.ston.fi"
