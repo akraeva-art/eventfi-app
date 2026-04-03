@@ -150,6 +150,10 @@ h1 {
   color: #dce5ff;
 }
 
+.quiz-item + .quiz-item {
+  margin-top: 14px;
+}
+
 .quiz-list {
   display: grid;
   gap: 10px;

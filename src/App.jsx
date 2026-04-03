@@ -1,13 +1,28 @@
 import { useState } from "react";
 import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 
-const QUIZ_OPTIONS = [
-  "A centralized exchange for Bitcoin only",
-  "A DeFi protocol on TON for swaps and liquidity",
-  "An NFT gallery for event badges",
+const QUIZ_QUESTIONS = [
+  {
+    id: "q1",
+    text: "What does OMNISTON help users do?",
+    options: [
+      "a) Swap tokens across blockchains",
+      "b) Build Telegram bots",
+      "c) Make TON memes",
+    ],
+    correct: "a) Swap tokens across blockchains",
+  },
+  {
+    id: "q2",
+    text: "What is one of OMNISTON's main user goals?",
+    options: [
+      "a) Mining Bitcoin",
+      "b) Selling NFTs",
+      "c) Simplifying UX and removing unnecessary steps",
+    ],
+    correct: "c) Simplifying UX and removing unnecessary steps",
+  },
 ];
-
-const CORRECT_ANSWER = QUIZ_OPTIONS[1];
 const EVENT_QR_TOKENS = {
   "eventfi-demo-2026": "ston-qr-access",
 };
@@ -19,7 +34,10 @@ export default function App() {
   const [checkedIn, setCheckedIn] = useState(false);
   const [quizDone, setQuizDone] = useState(false);
   const [quizCorrect, setQuizCorrect] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState("");
+  const [quizAnswers, setQuizAnswers] = useState({
+    q1: "",
+    q2: "",
+  });
   const [stonBalance, setStonBalance] = useState(0);
   const searchParams = new URLSearchParams(window.location.search);
   const eventId = searchParams.get("event");
@@ -28,7 +46,10 @@ export default function App() {
     Boolean(eventId) && EVENT_QR_TOKENS[eventId] === eventToken;
 
   const canCheckIn = walletConnected && hasEventAccess && !checkedIn;
-  const canSubmitQuiz = checkedIn && !quizDone && selectedAnswer !== "";
+  const hasAllQuizAnswers = QUIZ_QUESTIONS.every(
+    (question) => quizAnswers[question.id] !== ""
+  );
+  const canSubmitQuiz = checkedIn && !quizDone && hasAllQuizAnswers;
 
   const handleConnectWallet = () => {
     tonConnectUI.openModal();
@@ -39,7 +60,7 @@ export default function App() {
     setCheckedIn(false);
     setQuizDone(false);
     setQuizCorrect(false);
-    setSelectedAnswer("");
+    setQuizAnswers({ q1: "", q2: "" });
     setStonBalance(0);
   };
 
@@ -53,12 +74,21 @@ export default function App() {
     event.preventDefault();
     if (!canSubmitQuiz) return;
 
-    const isCorrect = selectedAnswer === CORRECT_ANSWER;
+    const isCorrect = QUIZ_QUESTIONS.every(
+      (question) => quizAnswers[question.id] === question.correct
+    );
     setQuizDone(true);
     setQuizCorrect(isCorrect);
     if (isCorrect) {
       setStonBalance((current) => current + 10);
     }
+  };
+
+  const handleQuizAnswerChange = (questionId, value) => {
+    setQuizAnswers((current) => ({
+      ...current,
+      [questionId]: value,
+    }));
   };
 
   const walletLabel = wallet?.account?.address
@@ -145,29 +175,37 @@ export default function App() {
 
         <div className="block">
           <h2>3. Mini Quiz</h2>
-          <p className="question">What is STON.fi?</p>
           <form onSubmit={handleQuizSubmit}>
-            <div className="quiz-list">
-              {QUIZ_OPTIONS.map((option) => (
-                <label key={option} className="radio-item">
-                  <input
-                    type="radio"
-                    name="quiz"
-                    value={option}
-                    checked={selectedAnswer === option}
-                    disabled={!checkedIn || quizDone}
-                    onChange={(event) => setSelectedAnswer(event.target.value)}
-                  />
-                  <span>{option}</span>
-                </label>
-              ))}
-            </div>
+            {QUIZ_QUESTIONS.map((question, index) => (
+              <div key={question.id} className="quiz-item">
+                <p className="question">
+                  {index + 1}. {question.text}
+                </p>
+                <div className="quiz-list">
+                  {question.options.map((option) => (
+                    <label key={option} className="radio-item">
+                      <input
+                        type="radio"
+                        name={question.id}
+                        value={option}
+                        checked={quizAnswers[question.id] === option}
+                        disabled={!checkedIn || quizDone}
+                        onChange={(event) =>
+                          handleQuizAnswerChange(question.id, event.target.value)
+                        }
+                      />
+                      <span>{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
             <button type="submit" className="btn" disabled={!canSubmitQuiz}>
-              Submit answer
+              Submit answers
             </button>
           </form>
           {quizDone && quizCorrect && (
-            <p className="success">Correct answer (+10 STON)</p>
+            <p className="success">Correct answers (+10 STON)</p>
           )}
           {quizDone && !quizCorrect && (
             <p className="error">Not quite. Reward was not added.</p>
