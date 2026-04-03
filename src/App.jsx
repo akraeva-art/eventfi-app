@@ -43,7 +43,31 @@ const QUIZ_QUESTIONS = [
   },
 ];
 const MAX_QUIZ_ATTEMPTS = 3;
-const CELEBRATION_SPARKS = Array.from({ length: 16 }, (_, index) => index);
+const CONFETTI_PARTICLES = Array.from({ length: 88 }, (_, index) => {
+  const i = index + 1;
+  const x = (i * 11.7) % 100;
+  const drift = ((i * 17) % 170) - 85;
+  const size = 4 + (i % 7);
+  const delay = ((i * 13) % 58) / 100;
+  const duration = 3.65 + ((i * 7) % 76) / 100;
+  const hue = i % 2 === 0 ? 320 + (i % 20) : 258 + (i % 24);
+  const rotationStart = (i * 31) % 360;
+  const rotationEnd = rotationStart + 620 + (i % 8) * 22;
+  const skew = ((i * 9) % 32) - 16;
+
+  return {
+    id: i,
+    x,
+    drift,
+    size,
+    delay,
+    duration,
+    hue,
+    rotationStart,
+    rotationEnd,
+    skew,
+  };
+});
 const EVENT_QR_TOKENS = {
   "eventfi-demo-2026": "ston-qr-access",
 };
@@ -217,14 +241,23 @@ export default function App() {
           <h2>3. Mini Quiz</h2>
           {quizPassed && (
             <div className="quiz-celebration" aria-hidden="true">
-              <div className="firework firework-left">
-                {CELEBRATION_SPARKS.map((spark) => (
-                  <span key={`left-${spark}`} className="spark" />
-                ))}
-              </div>
-              <div className="firework firework-right">
-                {CELEBRATION_SPARKS.map((spark) => (
-                  <span key={`right-${spark}`} className="spark" />
+              <div className="quiz-confetti-band">
+                {CONFETTI_PARTICLES.map((piece) => (
+                  <span
+                    key={piece.id}
+                    className="confetti-piece"
+                    style={{
+                      "--x-start": `${piece.x}%`,
+                      "--drift": `${piece.drift}px`,
+                      "--size": `${piece.size}px`,
+                      "--delay": `${piece.delay}s`,
+                      "--duration": `${piece.duration}s`,
+                      "--hue": piece.hue,
+                      "--rot-start": `${piece.rotationStart}deg`,
+                      "--rot-end": `${piece.rotationEnd}deg`,
+                      "--skew": `${piece.skew}deg`,
+                    }}
+                  />
                 ))}
               </div>
             </div>

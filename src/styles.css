@@ -222,211 +222,54 @@ h1 {
   overflow: hidden;
 }
 
-.firework {
-  --dir: 1;
+.quiz-confetti-band {
   position: absolute;
-  top: -2px;
-  width: 190px;
-  height: 190px;
+  left: 8px;
+  right: 8px;
+  top: 30%;
+  bottom: 9%;
+  overflow: hidden;
+  border-radius: 10px;
+  isolation: isolate;
 }
 
-.firework-left {
-  left: -28px;
-}
-
-.firework-right {
-  right: -28px;
-  --dir: -1;
-}
-
-.firework::before,
-.firework::after {
-  content: "";
+.confetti-piece {
   position: absolute;
-  left: 38px;
-  top: 98px;
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  border: 2px solid rgba(159, 237, 255, 0.7);
-  box-shadow:
-    0 0 18px rgba(111, 220, 255, 0.65),
-    inset 0 0 10px rgba(184, 248, 255, 0.55);
-  opacity: 0;
-  animation: fire-ring 1.8s ease-out infinite;
-}
-
-.firework::after {
-  animation-delay: 0.35s;
-}
-
-.spark {
-  --x: 40px;
-  --y: -120px;
-  --h: 180;
-  --delay: 0s;
-  --spin: 460deg;
-  position: absolute;
-  left: 44px;
-  top: 106px;
-  width: 8px;
-  height: 14px;
-  border-radius: 8px;
-  background: hsl(var(--h) 96% 65%);
-  box-shadow: 0 0 10px hsl(var(--h) 96% 65% / 0.8);
-  opacity: 0;
+  left: var(--x-start);
+  top: -12%;
+  width: var(--size);
+  height: calc(var(--size) * 0.72);
+  background: hsl(var(--hue) 95% 67%);
+  border-radius: 1px;
   transform-origin: center;
-  animation: spark-burst 1.8s cubic-bezier(0.19, 0.8, 0.28, 1) infinite;
-  animation-delay: var(--delay);
+  transform: translate3d(0, 0, 0) rotate(var(--rot-start)) skewX(var(--skew));
+  box-shadow: 0 0 8px hsl(var(--hue) 95% 67% / 0.55);
+  opacity: 0;
+  animation: confetti-fall var(--duration) linear var(--delay) 1 both;
 }
 
-.spark::after {
-  content: "";
-  position: absolute;
-  left: 2px;
-  top: 10px;
-  width: 4px;
-  height: 12px;
-  border-radius: 999px;
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--h) 100% 75% / 0.8),
-    hsl(var(--h) 100% 65% / 0)
-  );
+.confetti-piece:nth-child(3n) {
+  width: calc(var(--size) * 0.8);
+  height: calc(var(--size) * 1.32);
+  border-radius: 2px;
 }
 
-.spark:nth-child(1) {
-  --x: 22px;
-  --y: -86px;
-  --h: 16;
-  --delay: 0s;
+.confetti-piece:nth-child(4n) {
+  width: calc(var(--size) * 1.35);
+  height: calc(var(--size) * 0.52);
 }
 
-.spark:nth-child(2) {
-  --x: 34px;
-  --y: -102px;
-  --h: 45;
-  --delay: 0.04s;
+.confetti-piece:nth-child(7n) {
+  clip-path: polygon(8% 0, 100% 14%, 84% 100%, 0 82%);
 }
 
-.spark:nth-child(3) {
-  --x: 48px;
-  --y: -116px;
-  --h: 204;
-  --delay: 0.09s;
-}
-
-.spark:nth-child(4) {
-  --x: 56px;
-  --y: -92px;
-  --h: 168;
-  --delay: 0.14s;
-}
-
-.spark:nth-child(5) {
-  --x: 66px;
-  --y: -80px;
-  --h: 286;
-  --delay: 0.18s;
-}
-
-.spark:nth-child(6) {
-  --x: 78px;
-  --y: -64px;
-  --h: 334;
-  --delay: 0.23s;
-}
-
-.spark:nth-child(7) {
-  --x: 18px;
-  --y: -124px;
-  --h: 192;
-  --delay: 0.27s;
-}
-
-.spark:nth-child(8) {
-  --x: 40px;
-  --y: -138px;
-  --h: 120;
-  --delay: 0.32s;
-}
-
-.spark:nth-child(9) {
-  --x: 58px;
-  --y: -128px;
-  --h: 258;
-  --delay: 0.36s;
-}
-
-.spark:nth-child(10) {
-  --x: 76px;
-  --y: -108px;
-  --h: 27;
-  --delay: 0.4s;
-}
-
-.spark:nth-child(11) {
-  --x: 84px;
-  --y: -86px;
-  --h: 200;
-  --delay: 0.45s;
-}
-
-.spark:nth-child(12) {
-  --x: 12px;
-  --y: -60px;
-  --h: 54;
-  --delay: 0.5s;
-}
-
-.spark:nth-child(13) {
-  --x: 28px;
-  --y: -72px;
-  --h: 149;
-  --delay: 0.55s;
-}
-
-.spark:nth-child(14) {
-  --x: 50px;
-  --y: -58px;
-  --h: 320;
-  --delay: 0.58s;
-}
-
-.spark:nth-child(15) {
-  --x: 64px;
-  --y: -52px;
-  --h: 219;
-  --delay: 0.63s;
-}
-
-.spark:nth-child(16) {
-  --x: 90px;
-  --y: -48px;
-  --h: 10;
-  --delay: 0.68s;
-}
-
-@keyframes fire-ring {
+@keyframes confetti-fall {
   0% {
     opacity: 0;
-    transform: scale(0.25);
+    transform: translate3d(0, -16%, 0) rotate(var(--rot-start))
+      skewX(var(--skew));
   }
-  12% {
-    opacity: 0.95;
-  }
-  100% {
-    opacity: 0;
-    transform: scale(3);
-  }
-}
-
-@keyframes spark-burst {
-  0% {
-    opacity: 0;
-    transform: translate(0, 0) scale(0.35) rotate(0deg);
-  }
-  12% {
+  8% {
     opacity: 1;
   }
   82% {
@@ -434,8 +277,8 @@ h1 {
   }
   100% {
     opacity: 0;
-    transform: translate(calc(var(--x) * var(--dir)), var(--y)) scale(1.05)
-      rotate(var(--spin));
+    transform: translate3d(var(--drift), 118%, 0) rotate(var(--rot-end))
+      skewX(calc(var(--skew) * -1));
   }
 }
 
