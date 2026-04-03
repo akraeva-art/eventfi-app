@@ -11,25 +11,10 @@
 body {
   margin: 0;
   min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
   background:
     radial-gradient(circle at 15% 20%, rgba(67, 97, 238, 0.45), transparent 40%),
     radial-gradient(circle at 85% 80%, rgba(76, 201, 240, 0.24), transparent 35%),
     linear-gradient(145deg, #080a14 10%, #111739 55%, #080a14 100%);
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: min(46vh, 420px);
-  background: url("/cat-space-bg.png") left bottom / cover no-repeat;
-  opacity: 0.7;
-  pointer-events: none;
-  z-index: 0;
 }
 
 .page {
@@ -38,8 +23,6 @@ body::after {
   justify-content: center;
   align-items: center;
   padding: 24px;
-  position: relative;
-  z-index: 1;
 }
 
 .card {
@@ -340,10 +323,6 @@ body::after {
     min-height: 370px;
   }
 
-  body::after {
-    height: min(40vh, 320px);
-    background-position: 12% bottom;
-  }
 }
 
 @media (max-width: 390px) {
