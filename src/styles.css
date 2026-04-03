@@ -92,6 +92,12 @@ h1 {
   font-size: 1.08rem;
 }
 
+.wallet-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .btn {
   display: inline-flex;
   justify-content: center;
@@ -119,6 +125,10 @@ h1 {
   border: none;
   color: #091025;
   font-weight: 700;
+}
+
+.btn-secondary {
+  background: rgba(27, 35, 73, 0.82);
 }
 
 .btn-link {

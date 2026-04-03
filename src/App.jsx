@@ -26,6 +26,15 @@ export default function App() {
     tonConnectUI.openModal();
   };
 
+  const handleDisconnectWallet = async () => {
+    await tonConnectUI.disconnect();
+    setCheckedIn(false);
+    setQuizDone(false);
+    setQuizCorrect(false);
+    setSelectedAnswer("");
+    setStonBalance(0);
+  };
+
   const handleCheckIn = () => {
     if (!canCheckIn) return;
     setCheckedIn(true);
@@ -69,14 +78,25 @@ export default function App() {
 
         <div className="block">
           <h2>1. Connect Wallet</h2>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleConnectWallet}
-            disabled={walletConnected}
-          >
-            {walletConnected ? walletLabel : "Connect Wallet"}
-          </button>
+          <div className="wallet-actions">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleConnectWallet}
+              disabled={walletConnected}
+            >
+              {walletConnected ? walletLabel : "Connect Wallet"}
+            </button>
+            {walletConnected && (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleDisconnectWallet}
+              >
+                Disconnect wallet
+              </button>
+            )}
+          </div>
           {!walletConnected && (
             <p className="helper">
               No wallet yet?{" "}
@@ -88,6 +108,11 @@ export default function App() {
               >
                 Install Tonkeeper
               </a>
+            </p>
+          )}
+          {walletConnected && (
+            <p className="helper">
+              Wallet sessions are restored automatically until you disconnect.
             </p>
           )}
         </div>
