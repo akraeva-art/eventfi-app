@@ -8,6 +8,9 @@ const QUIZ_OPTIONS = [
 ];
 
 const CORRECT_ANSWER = QUIZ_OPTIONS[1];
+const EVENT_QR_TOKENS = {
+  "eventfi-demo-2026": "ston-qr-access",
+};
 
 export default function App() {
   const [tonConnectUI] = useTonConnectUI();
@@ -18,8 +21,13 @@ export default function App() {
   const [quizCorrect, setQuizCorrect] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [stonBalance, setStonBalance] = useState(0);
+  const searchParams = new URLSearchParams(window.location.search);
+  const eventId = searchParams.get("event");
+  const eventToken = searchParams.get("token");
+  const hasEventAccess =
+    Boolean(eventId) && EVENT_QR_TOKENS[eventId] === eventToken;
 
-  const canCheckIn = walletConnected && !checkedIn;
+  const canCheckIn = walletConnected && hasEventAccess && !checkedIn;
   const canSubmitQuiz = checkedIn && !quizDone && selectedAnswer !== "";
 
   const handleConnectWallet = () => {
@@ -127,6 +135,11 @@ export default function App() {
           >
             {checkedIn ? "Badge unlocked (+10 STON)" : "I’m at the event"}
           </button>
+          {walletConnected && !hasEventAccess && (
+            <p className="warning">
+              Open EventFi from the official event QR to unlock check-in.
+            </p>
+          )}
           {checkedIn && <p className="success">Badge unlocked</p>}
         </div>
 

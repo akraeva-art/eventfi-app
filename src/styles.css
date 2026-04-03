@@ -181,6 +181,12 @@ h1 {
   font-weight: 600;
 }
 
+.warning {
+  margin: 10px 0 0;
+  color: #ffd99c;
+  font-weight: 600;
+}
+
 .final-block {
   margin-bottom: 2px;
 }
