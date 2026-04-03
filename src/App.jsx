@@ -4,7 +4,10 @@ import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 const QUIZ_QUESTIONS = [
   {
     id: "q1",
-    text: "What is STON.fi?",
+    textBeforeLink: "What is ",
+    linkText: "STON.fi",
+    linkUrl: "https://ston.fi",
+    textAfterLink: "?",
     options: [
       "A centralized exchange for Bitcoin only",
       "A DeFi protocol on TON for swaps and liquidity",
@@ -14,7 +17,10 @@ const QUIZ_QUESTIONS = [
   },
   {
     id: "q2",
-    text: "What does OMNISTON help users do?",
+    textBeforeLink: "What does ",
+    linkText: "OMNISTON",
+    linkUrl: "https://ston.fi/omniston",
+    textAfterLink: " help users do?",
     options: [
       "a) Swap tokens across blockchains",
       "b) Build Telegram bots",
@@ -24,7 +30,10 @@ const QUIZ_QUESTIONS = [
   },
   {
     id: "q3",
-    text: "What is one of OMNISTON's main user goals?",
+    textBeforeLink: "What is one of ",
+    linkText: "OMNISTON",
+    linkUrl: "https://ston.fi/omniston",
+    textAfterLink: "'s main user goals?",
     options: [
       "a) Mining Bitcoin",
       "b) Selling NFTs",
@@ -210,7 +219,16 @@ export default function App() {
             {QUIZ_QUESTIONS.map((question, index) => (
               <div key={question.id} className="quiz-item">
                 <p className="question">
-                  {index + 1}. {question.text}
+                  {index + 1}. {question.textBeforeLink}
+                  <a
+                    className="question-link"
+                    href={question.linkUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {question.linkText}
+                  </a>
+                  {question.textAfterLink}
                 </p>
                 <div className="quiz-list">
                   {question.options.map((option) => (

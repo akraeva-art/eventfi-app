@@ -150,6 +150,12 @@ h1 {
   color: #dce5ff;
 }
 
+.question-link {
+  color: #7edbff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .attempts {
   margin: 0 0 12px;
   color: #b9c8ff;
