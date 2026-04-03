@@ -145,6 +145,10 @@ h1 {
   color: #84d7ff;
 }
 
+.helper-warning {
+  color: #ffd38b;
+}
+
 .question {
   margin: 0 0 10px;
   color: #dce5ff;

@@ -98,17 +98,23 @@ export default function App() {
             )}
           </div>
           {!walletConnected && (
-            <p className="helper">
-              No wallet yet?{" "}
-              <a
-                className="helper-link"
-                href="https://tonkeeper.com"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Install Tonkeeper
-              </a>
-            </p>
+            <>
+              <p className="helper">
+                No wallet yet?{" "}
+                <a
+                  className="helper-link"
+                  href="https://tonkeeper.com"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Install Tonkeeper
+                </a>
+              </p>
+              <p className="helper helper-warning">
+                If Tonkeeper shows WATCH ONLY, switch to a regular wallet account
+                to connect.
+              </p>
+            </>
           )}
           {walletConnected && (
             <p className="helper">
