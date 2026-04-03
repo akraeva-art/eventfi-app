@@ -1,7 +1,7 @@
 :root {
   font-family: "Space Grotesk", "Segoe UI", sans-serif;
-  color: #eef2ff;
-  background: #090b18;
+  color: #f4ebff;
+  background: #12071e;
 }
 
 * {
@@ -12,9 +12,9 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 15% 20%, rgba(67, 97, 238, 0.45), transparent 40%),
-    radial-gradient(circle at 85% 80%, rgba(76, 201, 240, 0.24), transparent 35%),
-    linear-gradient(145deg, #080a14 10%, #111739 55%, #080a14 100%);
+    radial-gradient(circle at 14% 16%, rgba(150, 56, 200, 0.42), transparent 42%),
+    radial-gradient(circle at 86% 80%, rgba(255, 89, 179, 0.26), transparent 38%),
+    linear-gradient(145deg, #12071e 8%, #1d1031 55%, #0d0720 100%);
 }
 
 .page {
@@ -28,8 +28,8 @@ body {
 .card {
   width: 100%;
   max-width: 700px;
-  background: rgba(15, 19, 40, 0.8);
-  border: 1px solid rgba(174, 191, 255, 0.2);
+  background: rgba(24, 14, 44, 0.82);
+  border: 1px solid rgba(222, 129, 255, 0.24);
   border-radius: 20px;
   padding: 26px;
   backdrop-filter: blur(10px);
@@ -41,31 +41,51 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-size: 0.75rem;
-  color: #8ec5ff;
+  color: #ff8fd3;
 }
 
-h1 {
-  margin: 0;
-  font-size: 2.2rem;
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.brand {
+  margin-bottom: 8px;
+}
+
+.brand-logo {
+  width: min(430px, 100%);
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  box-shadow:
+    0 0 24px rgba(111, 57, 253, 0.35),
+    0 0 34px rgba(255, 87, 167, 0.2);
 }
 
 .subtitle {
   margin: 8px 0 20px;
-  color: #c4cffd;
+  color: #e6c8ff;
 }
 
 .balance-box {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(30, 42, 92, 0.5);
-  border: 1px solid rgba(145, 170, 255, 0.22);
+  background: rgba(54, 26, 84, 0.52);
+  border: 1px solid rgba(236, 129, 255, 0.28);
   border-radius: 14px;
   padding: 12px 14px;
 }
 
 .balance-box strong {
-  color: #6ce1ff;
+  color: #ff86cb;
   font-size: 1.05rem;
 }
 
@@ -75,16 +95,16 @@ h1 {
   padding: 7px 11px;
   border-radius: 999px;
   font-size: 0.85rem;
-  border: 1px solid rgba(180, 196, 255, 0.28);
-  color: #dbe3ff;
+  border: 1px solid rgba(247, 146, 255, 0.32);
+  color: #f6d6ff;
 }
 
 .block {
   margin-top: 18px;
   padding: 14px;
   border-radius: 14px;
-  border: 1px solid rgba(175, 195, 255, 0.18);
-  background: rgba(18, 24, 50, 0.64);
+  border: 1px solid rgba(230, 126, 255, 0.2);
+  background: rgba(30, 16, 54, 0.66);
 }
 
 .block h2 {
@@ -102,8 +122,8 @@ h1 {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid rgba(166, 184, 255, 0.45);
-  background: rgba(41, 57, 115, 0.72);
+  border: 1px solid rgba(235, 149, 255, 0.5);
+  background: rgba(74, 37, 109, 0.74);
   color: #eff3ff;
   border-radius: 12px;
   padding: 11px 14px;
@@ -112,7 +132,7 @@ h1 {
 }
 
 .btn:hover:enabled {
-  background: rgba(58, 76, 145, 0.9);
+  background: rgba(101, 52, 145, 0.92);
 }
 
 .btn:disabled {
@@ -121,14 +141,14 @@ h1 {
 }
 
 .btn-primary {
-  background: linear-gradient(125deg, #5c6bff, #48cbff);
+  background: linear-gradient(125deg, #8a52ff, #ff5aa8);
   border: none;
-  color: #091025;
+  color: #1f0931;
   font-weight: 700;
 }
 
 .btn-secondary {
-  background: rgba(27, 35, 73, 0.82);
+  background: rgba(74, 40, 107, 0.88);
 }
 
 .btn-link {
@@ -137,28 +157,28 @@ h1 {
 
 .helper {
   margin: 10px 0 0;
-  color: #c8d4ff;
+  color: #e8d2ff;
   font-size: 0.92rem;
 }
 
 .helper-link {
-  color: #84d7ff;
+  color: #ff8fcf;
 }
 
 .question {
   margin: 0 0 10px;
-  color: #dce5ff;
+  color: #f2deff;
 }
 
 .question-link {
-  color: #7edbff;
+  color: #ff8ece;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .attempts {
   margin: 0 0 12px;
-  color: #b9c8ff;
+  color: #deb6ff;
   font-size: 0.92rem;
 }
 
@@ -178,7 +198,7 @@ h1 {
   gap: 8px;
   padding: 9px;
   border-radius: 10px;
-  background: rgba(33, 42, 82, 0.66);
+  background: rgba(59, 30, 93, 0.68);
 }
 
 .radio-item input {
@@ -187,7 +207,7 @@ h1 {
 
 .success {
   margin: 10px 0 0;
-  color: #80f0b8;
+  color: #ff8ad1;
   font-weight: 600;
 }
 
@@ -199,7 +219,7 @@ h1 {
 
 .warning {
   margin: 10px 0 0;
-  color: #ffd99c;
+  color: #ffc2eb;
   font-weight: 600;
 }
 
@@ -209,10 +229,10 @@ h1 {
 }
 
 .quiz-success {
-  border-color: rgba(140, 233, 255, 0.5);
+  border-color: rgba(250, 132, 255, 0.52);
   box-shadow:
-    0 0 0 1px rgba(138, 229, 255, 0.18),
-    0 14px 30px rgba(0, 0, 0, 0.35);
+    0 0 0 1px rgba(246, 121, 255, 0.2),
+    0 14px 30px rgba(37, 8, 51, 0.46);
 }
 
 .quiz-celebration {
@@ -294,16 +314,16 @@ h1 {
 
 .final-note {
   margin: 0 0 12px;
-  color: #cde7ff;
+  color: #f1d9ff;
 }
 
 .swap-shell {
   position: relative;
   margin-top: 12px;
-  border: 1px solid rgba(140, 161, 255, 0.28);
+  border: 1px solid rgba(241, 143, 255, 0.3);
   border-radius: 12px;
   overflow: hidden;
-  background: rgba(8, 12, 30, 0.95);
+  background: rgba(16, 8, 35, 0.96);
   min-height: 560px;
 }
 
@@ -318,7 +338,7 @@ h1 {
   left: 16px;
   top: 12px;
   margin: 0;
-  color: #9cc7ff;
+  color: #e4bdff;
   font-size: 0.92rem;
 }
 
@@ -327,8 +347,8 @@ h1 {
     padding: 20px;
   }
 
-  h1 {
-    font-size: 1.8rem;
+  .brand-logo {
+    width: 100%;
   }
 
   .btn {

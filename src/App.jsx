@@ -221,7 +221,10 @@ export default function App() {
     <main className="page">
       <section className="card">
         <p className="kicker">Event Demo</p>
-        <h1>EventFi</h1>
+        <h1 className="sr-only">EventFi</h1>
+        <div className="brand">
+          <img className="brand-logo" src="/eventfi-logo.png" alt="EventFi logo" />
+        </div>
         <p className="subtitle">Turn event attendees into DeFi users</p>
 
         <div className="balance-box">
