@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import omnistonWidgetLoader from "@ston-fi/omniston-widget-loader";
 import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 
 const QUIZ_QUESTIONS = [
@@ -81,12 +82,16 @@ export default function App() {
   const [quizAttempts, setQuizAttempts] = useState(0);
   const [quizFeedback, setQuizFeedback] = useState("");
   const [showSwapWidget, setShowSwapWidget] = useState(false);
+  const [swapWidgetLoading, setSwapWidgetLoading] = useState(false);
+  const [swapWidgetError, setSwapWidgetError] = useState("");
   const [quizAnswers, setQuizAnswers] = useState({
     q1: "",
     q2: "",
     q3: "",
   });
   const [stonBalance, setStonBalance] = useState(0);
+  const swapWidgetContainerRef = useRef(null);
+  const swapWidgetRef = useRef(null);
   const searchParams = new URLSearchParams(window.location.search);
   const eventId = searchParams.get("event");
   const eventToken = searchParams.get("token");
@@ -112,6 +117,8 @@ export default function App() {
     setQuizAttempts(0);
     setQuizFeedback("");
     setShowSwapWidget(false);
+    setSwapWidgetLoading(false);
+    setSwapWidgetError("");
     setQuizAnswers({ q1: "", q2: "", q3: "" });
     setStonBalance(0);
   };
@@ -154,6 +161,52 @@ export default function App() {
       [questionId]: value,
     }));
   };
+
+  useEffect(() => {
+    if (!quizPassed || !showSwapWidget || !tonConnectUI) return undefined;
+
+    let isMounted = true;
+    setSwapWidgetLoading(true);
+    setSwapWidgetError("");
+
+    omnistonWidgetLoader
+      .load()
+      .then((OmnistonWidgetConstructor) => {
+        if (!isMounted || !swapWidgetContainerRef.current) return;
+
+        swapWidgetRef.current = new OmnistonWidgetConstructor({
+          tonconnect: {
+            type: "integrated",
+            instance: tonConnectUI,
+          },
+          widget: {
+            defaultBidAsset: "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c",
+            defaultAskAsset: "EQA2kCVNwVsil2EM2mB0SkXytxCqQjS4mttjDpnXmwG9T6bO",
+          },
+        });
+
+        swapWidgetRef.current.mount(swapWidgetContainerRef.current);
+        setSwapWidgetLoading(false);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setSwapWidgetLoading(false);
+        setSwapWidgetError(
+          "Could not load the in-page widget. Please open STON.fi in a new tab."
+        );
+      });
+
+    return () => {
+      isMounted = false;
+      if (swapWidgetRef.current) {
+        swapWidgetRef.current.unmount();
+        swapWidgetRef.current = null;
+      }
+      if (swapWidgetContainerRef.current) {
+        swapWidgetContainerRef.current.innerHTML = "";
+      }
+    };
+  }, [quizPassed, showSwapWidget, tonConnectUI]);
 
   const walletLabel = wallet?.account?.address
     ? `${wallet.account.address.slice(0, 4)}...${wallet.account.address.slice(-4)}`
@@ -320,21 +373,28 @@ export default function App() {
             type="button"
             className="btn btn-primary"
             disabled={!quizPassed}
-            onClick={() => setShowSwapWidget((current) => !current)}
+            onClick={() =>
+              setShowSwapWidget((current) => {
+                const next = !current;
+                if (!next) {
+                  setSwapWidgetLoading(false);
+                  setSwapWidgetError("");
+                }
+                return next;
+              })
+            }
           >
             {showSwapWidget ? "Hide swap" : "Try swap in STON.fi"}
           </button>
           {quizPassed && showSwapWidget && (
             <>
               <div className="swap-shell">
-                <iframe
-                  title="STON.fi swap"
-                  className="swap-iframe"
-                  src="https://app.ston.fi/"
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                />
+                <div ref={swapWidgetContainerRef} className="swap-widget-container" />
+                {swapWidgetLoading && (
+                  <p className="swap-loading">Loading STON.fi swap widget...</p>
+                )}
               </div>
+              {swapWidgetError && <p className="error">{swapWidgetError}</p>}
               <p className="helper">
                 Widget blocked?{" "}
                 <a
