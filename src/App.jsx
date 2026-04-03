@@ -180,8 +180,8 @@ export default function App() {
             instance: tonConnectUI,
           },
           widget: {
-            defaultBidAsset: "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c",
-            defaultAskAsset: "EQA2kCVNwVsil2EM2mB0SkXytxCqQjS4mttjDpnXmwG9T6bO",
+            defaultBidAsset: "EQA2kCVNwVsil2EM2mB0SkXytxCqQjS4mttjDpnXmwG9T6bO",
+            defaultAskAsset: "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c",
           },
         });
 
@@ -370,6 +370,13 @@ export default function App() {
             <p className="final-note">
               Yes, you were absolutely right: OMNISTON is built for simplifying
               UX and removing unnecessary steps. See for yourself.
+            </p>
+          )}
+          {quizPassed && (
+            <p className="final-subnote">
+              Your wallet is already connected in EventFi, so the widget reuses
+              the same wallet session here. This demo shows the intended STON to
+              TON flow; fully automatic swapping works once rewards are sent on-chain.
             </p>
           )}
           <button
