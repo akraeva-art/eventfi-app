@@ -44,31 +44,6 @@ const QUIZ_QUESTIONS = [
   },
 ];
 const MAX_QUIZ_ATTEMPTS = 3;
-const CONFETTI_PARTICLES = Array.from({ length: 88 }, (_, index) => {
-  const i = index + 1;
-  const x = (i * 11.7) % 100;
-  const drift = ((i * 17) % 170) - 85;
-  const size = 4 + (i % 7);
-  const delay = ((i * 13) % 58) / 100;
-  const duration = 3.65 + ((i * 7) % 76) / 100;
-  const hue = i % 2 === 0 ? 320 + (i % 20) : 258 + (i % 24);
-  const rotationStart = (i * 31) % 360;
-  const rotationEnd = rotationStart + 620 + (i % 8) * 22;
-  const skew = ((i * 9) % 32) - 16;
-
-  return {
-    id: i,
-    x,
-    drift,
-    size,
-    delay,
-    duration,
-    hue,
-    rotationStart,
-    rotationEnd,
-    skew,
-  };
-});
 const EVENT_QR_TOKENS = {
   "eventfi-demo-2026": "ston-qr-access",
 };
@@ -92,6 +67,7 @@ export default function App() {
   const [stonBalance, setStonBalance] = useState(0);
   const swapWidgetContainerRef = useRef(null);
   const swapWidgetRef = useRef(null);
+  const finalBlockRef = useRef(null);
   const searchParams = new URLSearchParams(window.location.search);
   const eventId = searchParams.get("event");
   const eventToken = searchParams.get("token");
@@ -208,6 +184,11 @@ export default function App() {
     };
   }, [quizPassed, showSwapWidget, tonConnectUI]);
 
+  useEffect(() => {
+    if (!quizPassed || !finalBlockRef.current) return;
+    finalBlockRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [quizPassed]);
+
   const walletLabel = wallet?.account?.address
     ? `${wallet.account.address.slice(0, 4)}...${wallet.account.address.slice(-4)}`
     : "Wallet Connected";
@@ -220,12 +201,10 @@ export default function App() {
   return (
     <main className="page">
       <section className="card">
-        <p className="kicker">Event Demo</p>
         <h1 className="sr-only">EventFi</h1>
         <div className="brand">
           <img className="brand-logo" src="/eventfi-logo.png" alt="EventFi logo" />
         </div>
-        <p className="subtitle">Turn event attendees into DeFi users</p>
 
         <div className="balance-box">
           <span>STON Balance</span>
@@ -295,29 +274,6 @@ export default function App() {
 
         <div className={`block quiz-block ${quizPassed ? "quiz-success" : ""}`}>
           <h2>3. Mini Quiz</h2>
-          {quizPassed && (
-            <div className="quiz-celebration" aria-hidden="true">
-              <div className="quiz-confetti-band">
-                {CONFETTI_PARTICLES.map((piece) => (
-                  <span
-                    key={piece.id}
-                    className="confetti-piece"
-                    style={{
-                      "--x-start": `${piece.x}%`,
-                      "--drift": `${piece.drift}px`,
-                      "--size": `${piece.size}px`,
-                      "--delay": `${piece.delay}s`,
-                      "--duration": `${piece.duration}s`,
-                      "--hue": piece.hue,
-                      "--rot-start": `${piece.rotationStart}deg`,
-                      "--rot-end": `${piece.rotationEnd}deg`,
-                      "--skew": `${piece.skew}deg`,
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
           <p className="attempts">
             Attempts used: {quizAttempts}/{MAX_QUIZ_ATTEMPTS}
           </p>
@@ -363,20 +319,13 @@ export default function App() {
           {!quizPassed && quizFeedback && <p className="error">{quizFeedback}</p>}
         </div>
 
-        <div className="block final-block">
+        <div ref={finalBlockRef} className="block final-block">
           <h2>4. Final</h2>
           <p className="earned">You earned {stonBalance} STON</p>
           {quizPassed && (
             <p className="final-note">
               Yes, you were absolutely right: OMNISTON is built for simplifying
               UX and removing unnecessary steps. See for yourself.
-            </p>
-          )}
-          {quizPassed && (
-            <p className="final-subnote">
-              Your wallet is already connected in EventFi, so the widget reuses
-              the same wallet session here. This demo shows the intended STON to
-              TON flow; fully automatic swapping works once rewards are sent on-chain.
             </p>
           )}
           <button
@@ -415,6 +364,10 @@ export default function App() {
                 >
                   Open STON.fi in a new tab
                 </a>
+              </p>
+              <p className="final-subnote">
+                Wallet session is reused from EventFi. Full automatic swap works
+                after rewards are distributed on-chain.
               </p>
             </>
           )}
